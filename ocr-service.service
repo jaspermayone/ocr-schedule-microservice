@@ -1,0 +1,13 @@
+[Unit]
+Description=OCR Microservice
+After=network.target
+
+[Service]
+User=your-username
+WorkingDirectory=/path/to/ocr_service
+Environment="PATH=/path/to/ocr_service/venv/bin"
+ExecStart=/path/to/ocr_service/venv/bin/python main.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
