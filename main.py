@@ -7,6 +7,7 @@ import io
 import re
 from datetime import datetime
 import numpy as np
+from typing import Union  # Import Union
 
 app = FastAPI()
 
