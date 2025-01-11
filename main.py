@@ -176,16 +176,51 @@ def parse_schedule(text):
     return schedule
 
 @app.post("/ocr")
-async def ocr_endpoint(file: UploadFile = File(...)):
-    image_bytes = await file.read()
-    text = process_image(image_bytes)
-    schedule = parse_schedule(text)
-    
-    return {
-        "raw_text": text,
-        "schedule": schedule
-    }
+async def ocr_endpoint(file: Union[UploadFile, bytes] = File(...)):
+    try:
+        # If we got raw bytes
+        if isinstance(file, bytes):
+            image_bytes = file
+        # If we got an UploadFile
+        else:
+            image_bytes = await file.read()
+        
+        # Process the image and get text
+        text = process_image(image_bytes)
+        
+        # Parse the schedule
+        schedule = parse_schedule(text)
+        
+        return {
+            "raw_text": text,
+            "schedule": schedule
+        }
+    except Exception as e:
+        return {"error": str(e)}, 422
 
+@app.post("/ocr")
+async def ocr_endpoint(file: Union[UploadFile, bytes] = File(...)):
+    try:
+        # If we got raw bytes
+        if isinstance(file, bytes):
+            image_bytes = file
+        # If we got an UploadFile
+        else:
+            image_bytes = await file.read()
+        
+        # Process the image and get text
+        text = process_image(image_bytes)
+        
+        # Parse the schedule
+        schedule = parse_schedule(text)
+        
+        return {
+            "raw_text": text,
+            "schedule": schedule
+        }
+    except Exception as e:
+        return {"error": str(e)}, 422
+        
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
